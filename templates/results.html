@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - Job Scraper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="orb"></div>
+
+<div class="results-container">
+
+    <!-- Header -->
+    <div class="results-header">
+        <a href="/" class="back-btn">← Back</a>
+        <div>
+            <span class="badge">⚡ Live Results</span>
+            <h1>Found <span>{{ jobs|length }} Jobs</span></h1>
+            <p class="subtitle">{{ keyword }} · {{ location }}</p>
+        </div>
+        <a href="/download" class="download-btn">Download PDF Report →</a>
+    </div>
+
+    <!-- Job Cards Grid -->
+    <div class="jobs-grid">
+        {% for job in jobs %}
+        <div class="job-card">
+            <div class="job-top">
+                <div>
+                    <h3>{{ job["Job Title"] }}</h3>
+                    <p class="company">🏢 {{ job["Company"] }}</p>
+                </div>
+                <span class="tag">{{ job["Posted"] }}</span>
+            </div>
+            <div class="job-bottom">
+                <span class="location">📍 {{ job["Location"] }}</span>
+                <span class="salary">💰 {{ job["Salary"] }}</span>
+            </div>
+            {% if job["Description"] %}
+            <p class="description">{{ job["Description"] }}</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Bottom Download -->
+    <div class="bottom-bar">
+        <p>{{ jobs|length }} jobs found for <strong>{{ keyword }}</strong> in <strong>{{ location }}</strong></p>
+    </div>
+
+</div>
+
+</body>
+</html>
