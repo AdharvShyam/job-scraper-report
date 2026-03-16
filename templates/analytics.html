@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Job Scraper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="orb"></div>
+
+<div class="results-container">
+
+    <!-- Header -->
+    <div class="results-header">
+        <a href="/generate" class="back-btn">← Back to Results</a>
+        <div>
+            <span class="badge">📊 Analytics</span>
+            <h1>Job Market <span>Insights</span></h1>
+            <p class="subtitle">{{ keyword }} · {{ location }} · {{ jobs|length }} jobs analysed</p>
+        </div>
+        <a href="/download" class="download-btn">Download PDF →</a>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <h2>{{ jobs|length }}</h2>
+            <p>Total Jobs</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ top_companies|length }}</h2>
+            <p>Companies Hiring</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ top_locations|length }}</h2>
+            <p>Locations</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ top_dates|length }}</h2>
+            <p>Active Days</p>
+        </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="charts-grid">
+
+        <div class="chart-card wide">
+            <h3>Top Hiring Companies</h3>
+            <canvas id="companiesChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Top Locations</h3>
+            <canvas id="locationsChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Jobs Posted by Date</h3>
+            <canvas id="datesChart"></canvas>
+        </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+        <p>Analytics for <strong>{{ keyword }}</strong> in <strong>{{ location }}</strong></p>
+        <a href="/" class="download-btn">New Search →</a>
+    </div>
+
+</div>
+
+<script>
+    const chartDefaults = {
+        color: 'rgba(255,255,255,0.5)',
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            x: {
+                ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 11 } },
+                grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: {
+                ticks: { color: 'rgba(255,255,255,0.4)', font: { size: 11 } },
+                grid: { color: 'rgba(255,255,255,0.05)' }
+            }
+        }
+    };
+
+    // Companies Chart
+    new Chart(document.getElementById('companiesChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ top_companies | map(attribute=0) | list | tojson }},
+            datasets: [{
+                data: {{ top_companies | map(attribute=1) | list | tojson }},
+                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 1,
+                borderRadius: 6
+            }]
+        },
+        options: { ...chartDefaults, responsive: true }
+    });
+
+    // Locations Chart
+    new Chart(document.getElementById('locationsChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {{ top_locations | map(attribute=0) | list | tojson }},
+            datasets: [{
+                data: {{ top_locations | map(attribute=1) | list | tojson }},
+                backgroundColor: [
+                    'rgba(59,130,246,0.8)',
+                    'rgba(139,92,246,0.8)',
+                    'rgba(16,185,129,0.8)',
+                    'rgba(245,158,11,0.8)',
+                    'rgba(239,68,68,0.8)',
+                    'rgba(236,72,153,0.8)'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: { color: 'rgba(255,255,255,0.5)', font: { size: 11 }, padding: 15 }
+                }
+            }
+        }
+    });
+
+    // Dates Chart
+    new Chart(document.getElementById('datesChart'), {
+        type: 'line',
+        data: {
+            labels: {{ top_dates | map(attribute=0) | list | tojson }},
+            datasets: [{
+                data: {{ top_dates | map(attribute=1) | list | tojson }},
+                borderColor: 'rgba(16, 185, 129, 1)',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: 'rgba(16, 185, 129, 1)'
+            }]
+        },
+        options: { ...chartDefaults, responsive: true }
+    });
+</script>
+
+</body>
+</html>

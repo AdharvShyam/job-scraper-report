@@ -1,10 +1,14 @@
 from flask import Flask, render_template, request, send_file, session
 from scraper.scraper import scrape_jobs
 from report.pdf_generator import generate_pdf
+from collections import Counter
+from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = "adharv_secret_key_2026"
+app.secret_key = os.getenv("SECRET_KEY")
 
 @app.route("/")
 def index():
@@ -28,6 +32,37 @@ def generate():
     session["location"] = location
 
     return render_template("results.html", jobs=jobs, keyword=keyword, location=location)
+
+
+@app.route("/analytics")
+def analytics():
+    jobs = session.get("jobs", [])
+    keyword = session.get("keyword", "")
+    location = session.get("location", "")
+
+    if not jobs:
+        return render_template("index.html", error="Session expired! Please search again.")
+
+    # Top companies
+    companies = [job.get("Company", "N/A") for job in jobs]
+    top_companies = Counter(companies).most_common(8)
+
+    # Top locations
+    locations = [job.get("Location", "N/A") for job in jobs]
+    top_locations = Counter(locations).most_common(6)
+
+    # Jobs by date
+    dates = [job.get("Posted", "N/A") for job in jobs if job.get("Posted", "N/A") != "N/A"]
+    top_dates = Counter(dates).most_common(7)
+
+    return render_template("analytics.html",
+        jobs=jobs,
+        keyword=keyword,
+        location=location,
+        top_companies=top_companies,
+        top_locations=top_locations,
+        top_dates=top_dates
+    )
 
 
 @app.route("/download")

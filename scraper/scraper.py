@@ -1,9 +1,14 @@
 import requests
 import urllib3
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-APP_ID = "8b9f3293"
-APP_KEY = "4714e8a845ac18d61760f1a0ee9ef589"
+APP_ID = os.getenv("ADZUNA_APP_ID")
+APP_KEY = os.getenv("ADZUNA_APP_KEY")
 
 def scrape_jobs(keyword, location):
     print(f"Scraping jobs for: {keyword} in {location}...")
@@ -13,7 +18,7 @@ def scrape_jobs(keyword, location):
     params = {
         "app_id": APP_ID,
         "app_key": APP_KEY,
-        "results_per_page": 20,
+        "results_per_page": 50,
         "what": keyword,
         "where": location,
         "content-type": "application/json"

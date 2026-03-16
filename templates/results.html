@@ -15,12 +15,12 @@
     <!-- Header -->
     <div class="results-header">
         <a href="/" class="back-btn">← Back</a>
-        <div>
+        <div class="header-center">
             <span class="badge">⚡ Live Results</span>
             <h1>Found <span>{{ jobs|length }} Jobs</span></h1>
             <p class="subtitle">{{ keyword }} · {{ location }}</p>
         </div>
-        <a href="/download" class="download-btn">Download PDF Report →</a>
+        <a href="/download" class="download-btn">Download PDF →</a>
     </div>
 
     <!-- Job Cards Grid -->
@@ -45,9 +45,13 @@
         {% endfor %}
     </div>
 
-    <!-- Bottom Download -->
+    <!-- Bottom bar -->
     <div class="bottom-bar">
         <p>{{ jobs|length }} jobs found for <strong>{{ keyword }}</strong> in <strong>{{ location }}</strong></p>
+        <div style="display:flex; gap:12px;">
+            <a href="/analytics" class="analytics-btn">View Analytics 📊</a>
+            <a href="/download" class="download-btn">Download PDF →</a>
+        </div>
     </div>
 
 </div>
