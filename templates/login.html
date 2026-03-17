@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Job Scraper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="orb"></div>
+
+<div class="container">
+    <div class="card">
+
+        <div class="badge">🔐 Welcome Back</div>
+        <h1>Login to <span>Job Scraper</span></h1>
+        <p class="subtitle">Enter your credentials to access your dashboard</p>
+
+        <div class="divider"></div>
+
+        {% if error %}
+        <div class="error">⚠️ {{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+        <div class="success-msg">✅ {{ success }}</div>
+        {% endif %}
+
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label>Username</label>
+                <div class="input-wrap">
+                    <span>👤</span>
+                    <input type="text" name="username" placeholder="Enter your username" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <div class="input-wrap">
+                    <span>🔒</span>
+                    <input type="password" name="password" placeholder="Enter your password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn">Login →</button>
+        </form>
+
+        <p class="footer-text">Don't have an account? <a href="/register" style="color:#3b82f6;">Register here</a></p>
+
+    </div>
+</div>
+
+</body>
+</html>

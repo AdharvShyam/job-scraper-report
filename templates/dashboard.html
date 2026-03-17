@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Job Scraper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="orb"></div>
+
+<div class="results-container">
+
+    <!-- Header -->
+    <div class="results-header">
+        <div class="header-center">
+            <span class="badge">👋 Welcome back, {{ username }}!</span>
+            <h1>Your <span>Dashboard</span></h1>
+            <p class="subtitle">View your search history and start new searches</p>
+        </div>
+        <a href="/logout" class="back-btn">Logout →</a>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <h2>{{ searches|length }}</h2>
+            <p>Total Searches</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ searches|sum(attribute='results_count') }}</h2>
+            <p>Total Jobs Found</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ searches|map(attribute='keyword')|list|unique|list|length }}</h2>
+            <p>Unique Keywords</p>
+        </div>
+        <div class="stat-card">
+            <h2>{{ searches|map(attribute='location')|list|unique|list|length }}</h2>
+            <p>Unique Locations</p>
+        </div>
+    </div>
+
+    <!-- New Search -->
+    <div class="email-card" style="margin-bottom:24px;">
+        <h3>🔍 New Search</h3>
+        <form action="/generate" method="POST">
+            <div class="email-form">
+                <input type="text" name="keyword" placeholder="Job keyword e.g. Python Developer" required>
+                <input type="text" name="location" placeholder="Location e.g. Bangalore" required>
+                <button type="submit" class="email-btn">Search Jobs →</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search History -->
+    <div class="chart-card" style="margin-bottom:24px;">
+        <h3>📋 Search History</h3>
+        {% if searches %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Keyword</th>
+                    <th>Location</th>
+                    <th>Jobs Found</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for search in searches|reverse %}
+                <tr>
+                    <td>{{ search.keyword }}</td>
+                    <td>{{ search.location }}</td>
+                    <td>{{ search.results_count }}</td>
+                    <td>{{ search.searched_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="color:rgba(255,255,255,0.3); text-align:center; padding:20px;">No searches yet! Start searching above. 🔍</p>
+        {% endif %}
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+        <p>Logged in as <strong>{{ username }}</strong></p>
+        <a href="/" class="download-btn">Go to Home →</a>
+    </div>
+
+</div>
+
+</body>
+</html>

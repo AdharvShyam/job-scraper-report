@@ -23,6 +23,25 @@
         <a href="/download" class="download-btn">Download PDF →</a>
     </div>
 
+    <!-- Success/Error messages -->
+    {% if success %}
+    <div class="success-msg">✅ {{ success }}</div>
+    {% endif %}
+    {% if error %}
+    <div class="error">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <!-- Email Form -->
+    <div class="email-card">
+        <h3>📧 Email this Report</h3>
+        <form action="/email" method="POST">
+            <div class="email-form">
+                <input type="email" name="email" placeholder="Enter your email address" required>
+                <button type="submit" class="email-btn">Send Report →</button>
+            </div>
+        </form>
+    </div>
+
     <!-- Job Cards Grid -->
     <div class="jobs-grid">
         {% for job in jobs %}
