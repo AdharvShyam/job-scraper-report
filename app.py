@@ -16,8 +16,9 @@ app.secret_key = os.getenv("SECRET_KEY")
 
 # MySQL configuration
 
-db_password = quote_plus(os.getenv('DB_PASSWORD'))
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', f"mysql+pymysql://root:{db_password}@localhost/jobscraper")
+db_password = os.getenv('DB_PASSWORD', '')
+db_password_encoded = quote_plus(db_password) if db_password else ''
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', f"mysql+pymysql://root:{db_password_encoded}@localhost/jobscraper")
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Mail configuration
